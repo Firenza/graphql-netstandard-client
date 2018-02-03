@@ -7,7 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQl.NetStandard.Client"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{45F2F7CF-3EF0-4239-A174-F90FC31D66FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL.NetStandard.Client.AcceptanceTests", "..\tests\GraphQL.NetStandard.Client.AcceptanceTests\GraphQL.NetStandard.Client.AcceptanceTests.csproj", "{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQL.NetStandard.Client.AcceptanceTests", "..\tests\GraphQL.NetStandard.Client.AcceptanceTests\GraphQL.NetStandard.Client.AcceptanceTests.csproj", "{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "git", "git", "{D3DB2B1C-DC2A-4DCB-AF18-C059C1F23DBA}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
