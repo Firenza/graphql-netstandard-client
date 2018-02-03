@@ -58,6 +58,17 @@ namespace GraphQl.NetStandard.Client
         }
 
         /// <summary>
+        /// Returns the HTML body of the GraphQL query response as a string
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="variables"></param>
+        /// <returns></returns>
+        public async Task<string> QueryAsync(string query)
+        {
+            return await QueryAsync(query, null);
+        }
+
+        /// <summary>
         /// Returns the response deserialized into the provided type.  Only useful for simple responses.
         /// </summary>
         /// <param name="query"></param>
@@ -68,11 +79,24 @@ namespace GraphQl.NetStandard.Client
             var stringContent = await QueryAsync(query, variables).ConfigureAwait(false);
 
             var jObject = JObject.Parse(stringContent);
-            var dataString = jObject["data"][typeof(T).Name.ToLowerCaseFirstCharacter()].ToString();
+
+            var dataString = jObject["data"].First.First.ToString();
 
             var returnType = JsonConvert.DeserializeObject<T>(dataString);
 
             return returnType;
+        }
+
+
+        /// <summary>
+        /// Returns the response deserialized into the provided type.  Only useful for simple responses.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="variables"></param>
+        /// <returns></returns>
+        public async Task<T> QueryAsync<T>(string query)
+        {
+            return await QueryAsync<T>(query, null);
         }
     }
 }
