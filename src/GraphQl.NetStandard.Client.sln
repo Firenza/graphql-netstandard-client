@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQl.NetStandard.Client", "GraphQl.NetStandard.Client\GraphQl.NetStandard.Client.csproj", "{68402B17-1CFD-40A9-A86B-D53E54B9DD55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQl.NetStandard.Client", "GraphQl.NetStandard.Client\GraphQl.NetStandard.Client.csproj", "{68402B17-1CFD-40A9-A86B-D53E54B9DD55}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{45F2F7CF-3EF0-4239-A174-F90FC31D66FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL.NetStandard.Client.AcceptanceTests", "..\tests\GraphQL.NetStandard.Client.AcceptanceTests\GraphQL.NetStandard.Client.AcceptanceTests.csproj", "{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{68402B17-1CFD-40A9-A86B-D53E54B9DD55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68402B17-1CFD-40A9-A86B-D53E54B9DD55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68402B17-1CFD-40A9-A86B-D53E54B9DD55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF} = {45F2F7CF-3EF0-4239-A174-F90FC31D66FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C6F943E6-7A80-4B4C-9B2D-5C5FF0EF38FC}
