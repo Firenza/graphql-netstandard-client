@@ -1,7 +1,7 @@
 # graphql-netstandard-client
 A simple and testable GraphQL client for .NET and .NET core
 
-To use reference the `GraphQl.NetStandard.Client` on NuGet
+To use reference the `GraphQl.NetStandard.Client` package on [NuGet](https://www.nuget.org/packages/GraphQl.NetStandard.Client/)
 
 An example request to read some basic repository information from GitHub
 ```csharp
