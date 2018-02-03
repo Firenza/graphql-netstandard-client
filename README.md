@@ -10,11 +10,9 @@ var repoOwner = "";
 var gitHubAuthToken = "";
 var githubGraphQLApiUrl = "https://api.github.com/graphql";
 
-var requestHeaders = new List<KeyValuePair<string, string>>
-{
-    new KeyValuePair<string,string>("Authorization", gitHubAuthToken),
-    new KeyValuePair<string,string>("User-Agent", "graphql-netstandard-client")
-};
+var requestHeaders = new NameValueCollection();
+requestHeaders.Add( "Authorization", gitHubAuthToken );
+requestHeaders.Add( "User-Agent", "graphql-netstandard-client" );
 
 IGraphQLClient graphQLClient = new GraphQLClient(githubGraphQLApiUrl, requestHeaders);
 
