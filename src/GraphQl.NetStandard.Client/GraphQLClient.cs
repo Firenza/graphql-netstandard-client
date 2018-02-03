@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,13 +23,13 @@ namespace GraphQl.NetStandard.Client
             httpClient.BaseAddress = new Uri(url);
         }
 
-        public GraphQLClient(string url, List<KeyValuePair<string, string>> requestHeaderKvps) : this(url)
+        public GraphQLClient(string url, NameValueCollection requestHeaders) : this(url)
         {
-            if (requestHeaderKvps != null)
+            if (requestHeaders != null)
             {
-                foreach (var requestHeaderKvp in requestHeaderKvps)
+                foreach (var requestHeaderKey in requestHeaders.AllKeys)
                 {
-                    httpClient.DefaultRequestHeaders.Add(requestHeaderKvp.Key, requestHeaderKvp.Value);
+                    httpClient.DefaultRequestHeaders.Add(requestHeaderKey ,requestHeaders[requestHeaderKey]);
                 }
             }
         }
