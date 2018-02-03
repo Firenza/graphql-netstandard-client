@@ -10,6 +10,7 @@
     <RepositoryUrl>https://github.com/Firenza/graphql-netstandard-client</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <Version>1.1.0</Version>
+    <PackageProjectUrl>https://github.com/Firenza/graphql-netstandard-client</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
