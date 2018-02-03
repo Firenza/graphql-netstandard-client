@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Chad Oftedahl</Authors>
+    <Company />
+    <Product>GraphQl.NetStandard.Client</Product>
+    <Description>A simple and testable GraphQL client for .NET and .NET core</Description>
+    <RepositoryUrl>https://github.com/Firenza/graphql-netstandard-client</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
