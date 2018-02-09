@@ -39,7 +39,7 @@ var variables = new { repoName = repoName, repoOwner = repoOwner }
 
 var responseBodyString = await graphQLClient.QueryAsync(query, variables);
 
-// Use Newtonsoft JSON library to get at reponse data
+// Use Newtonsoft JSON library to get at response data
 dynamic dynamicJObject = JObject.Parse(responseBodyString);
 Console.WriteLine(dynamicJObject.data.repository.pushedAt.Value<DateTime>());
 
