@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Http;
 using System.Text;
@@ -54,6 +55,8 @@ namespace GraphQl.NetStandard.Client
             var response = await httpClient.PostAsync(string.Empty, requestContent).ConfigureAwait(false);
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
+            CheckGraphQLResponseForErrors(response, responseContent);
+
             return responseContent;
         }
 
@@ -97,6 +100,32 @@ namespace GraphQl.NetStandard.Client
         public async Task<T> QueryAsync<T>(string query)
         {
             return await QueryAsync<T>(query, null);
+        }
+
+        private void CheckGraphQLResponseForErrors(HttpResponseMessage httpResponseMessage, string responseContent)
+        {
+            if (httpResponseMessage.IsSuccessStatusCode || httpResponseMessage.StatusCode == System.Net.HttpStatusCode.TemporaryRedirect)
+            {
+                // Check for any errors in the response JSON
+                var jObject = JObject.Parse(responseContent);
+                var errorsJObject = jObject["errors"];
+
+                if (errorsJObject != null && errorsJObject.HasValues)
+                {
+                    var errorMessages = new List<string>();
+
+                    foreach (var errorJObject in errorsJObject)
+                    {
+                        errorMessages.Add(errorJObject["message"].Value<string>());
+                    }
+
+                    throw new GraphQLQueryException(errorMessages);
+                }
+            }
+            else
+            {
+                throw new GraphQLRequestException(httpResponseMessage.StatusCode, responseContent);
+            }
         }
     }
 }
