@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Http;
 using System.Text;
@@ -35,7 +34,7 @@ namespace GraphQl.NetStandard.Client
         }
 
         /// <summary>
-        /// Returns the HTML body of the GraphQL query response as a string
+        /// Returns the JSON body of the GraphQL query response as a string
         /// </summary>
         /// <param name="query"></param>
         /// <param name="variables"></param>
@@ -59,7 +58,7 @@ namespace GraphQl.NetStandard.Client
         }
 
         /// <summary>
-        /// Returns the HTML body of the GraphQL query response as a string
+        /// Returns the JSON body of the GraphQL query response as a string
         /// </summary>
         /// <param name="query"></param>
         /// <param name="variables"></param>
