@@ -104,7 +104,7 @@ namespace GraphQl.NetStandard.Client
 
         private void CheckGraphQLResponseForErrors(HttpResponseMessage httpResponseMessage, string responseContent)
         {
-            if (httpResponseMessage.IsSuccessStatusCode || httpResponseMessage.StatusCode == System.Net.HttpStatusCode.TemporaryRedirect)
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
                 // Check for any errors in the response JSON
                 var jObject = JObject.Parse(responseContent);
