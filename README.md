@@ -11,7 +11,7 @@ var gitHubAuthToken = "";
 var githubGraphQLApiUrl = "https://api.github.com/graphql";
 
 var requestHeaders = new NameValueCollection();
-requestHeaders.Add( "Authorization", $Bearer {gitHubAuthToken});
+requestHeaders.Add( "Authorization", $"Bearer {gitHubAuthToken}");
 requestHeaders.Add( "User-Agent", "graphql-netstandard-client" );
 
 IGraphQLClient graphQLClient = new GraphQLClient(githubGraphQLApiUrl, requestHeaders);
