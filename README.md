@@ -10,11 +10,13 @@ var repoOwner = "";
 var gitHubAuthToken = "";
 var githubGraphQLApiUrl = "https://api.github.com/graphql";
 
+// These are added on each request so you can safely use an HttpClient instance that is 
+// shared across your application
 var requestHeaders = new NameValueCollection();
 requestHeaders.Add( "Authorization", $"Bearer {gitHubAuthToken}");
 requestHeaders.Add( "User-Agent", "graphql-netstandard-client" );
 
-IGraphQLClient graphQLClient = new GraphQLClient(githubGraphQLApiUrl, requestHeaders);
+IGraphQLClient graphQLClient = new GraphQLClient(new HttpClient(), githubGraphQLApiUrl, requestHeaders);
 
 var query = @"
 query ($repoName:String!, $repoOwner:String!){
