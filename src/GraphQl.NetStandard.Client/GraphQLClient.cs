@@ -8,9 +8,6 @@ using System.Threading.Tasks;
 
 namespace GraphQl.NetStandard.Client
 {
-    /// <summary>
-    /// Simple client to provide rudimentary GraphQL querying
-    /// </summary>s
     public class GraphQLClient : IGraphQLClient
     {
         private readonly HttpClient httpClient;
