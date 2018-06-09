@@ -22,7 +22,7 @@ test_script:
   - cmd: dotnet restore ./tests/GraphQL.NetStandard.Client.UnitTests/GraphQL.NetStandard.Client.UnitTests.csproj --verbosity m
   # run the unit tests (requires changing into the test directory)
   - cmd: cd tests/GraphQL.NetStandard.Client.UnitTests/bin/Debug/netcoreapp2.0/
-  - cmd: dotnet-vstest GraphQL.NetStandard.Client.UnitTests.dll /logger:Appveyor
+  - cmd: dotnet vstest GraphQL.NetStandard.Client.UnitTests.dll /logger:Appveyor
 on_finish :
   # any cleanup in here
 deploy:
