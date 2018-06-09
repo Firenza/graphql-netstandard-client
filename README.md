@@ -10,6 +10,8 @@ var repoOwner = "";
 var gitHubAuthToken = "";
 var githubGraphQLApiUrl = "https://api.github.com/graphql";
 
+// These are added on each request so you can safely use an HttpClient instance that is 
+// shared across your application
 var requestHeaders = new NameValueCollection();
 requestHeaders.Add( "Authorization", $"Bearer {gitHubAuthToken}");
 requestHeaders.Add( "User-Agent", "graphql-netstandard-client" );
