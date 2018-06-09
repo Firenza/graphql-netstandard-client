@@ -13,7 +13,7 @@ before_build:
   # Display .NET Core version
   - cmd: dotnet --version
   # Display minimal restore text
-  - cmd: dotnet restore ./src/src.csproj --verbosity m
+  - cmd: dotnet restore ./src/GraphQl.NetStandard.Client.sln --verbosity m
 after_build:
   # For once the build has completed
 clone_depth: 1
