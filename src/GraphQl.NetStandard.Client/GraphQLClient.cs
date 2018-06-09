@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Http;
@@ -14,24 +13,21 @@ namespace GraphQl.NetStandard.Client
     /// </summary>s
     public class GraphQLClient : IGraphQLClient
     {
-        private static HttpClient httpClient = new HttpClient();
+        private readonly HttpClient httpClient;
+        private readonly string url;
+        private readonly NameValueCollection requestHeaders;
 
         private GraphQLClient() { }
 
-        public GraphQLClient(string url)
+        public GraphQLClient(HttpClient httpClient, string url)
         {
-            httpClient.BaseAddress = new Uri(url);
+            this.httpClient = httpClient;
+            this.url = url;
         }
 
-        public GraphQLClient(string url, NameValueCollection requestHeaders) : this(url)
+        public GraphQLClient(HttpClient httpClient, string url, NameValueCollection requestHeaders) : this(httpClient, url)
         {
-            if (requestHeaders != null)
-            {
-                foreach (var requestHeaderKey in requestHeaders.AllKeys)
-                {
-                    httpClient.DefaultRequestHeaders.Add(requestHeaderKey ,requestHeaders[requestHeaderKey]);
-                }
-            }
+            this.requestHeaders = requestHeaders;
         }
 
         /// <summary>
@@ -50,10 +46,26 @@ namespace GraphQl.NetStandard.Client
 
             var jsonContent = JsonConvert.SerializeObject(fullQuery);
 
-            var requestContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
 
-            var response = await httpClient.PostAsync(string.Empty, requestContent).ConfigureAwait(false);
-            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            if (requestHeaders != null)
+            {
+                for (int i = 0; i < requestHeaders.Count; i++)
+                {
+                    requestMessage.Headers.Add(requestHeaders.GetKey(i), requestHeaders.GetValues(i));
+                }
+            }
+    
+            requestMessage.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+
+            string responseContent = null;
+
+            if (response.Content != null)
+            {
+               responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            }
 
             CheckGraphQLResponseForErrors(response, responseContent);
 
@@ -104,7 +116,7 @@ namespace GraphQl.NetStandard.Client
 
         private void CheckGraphQLResponseForErrors(HttpResponseMessage httpResponseMessage, string responseContent)
         {
-            if (httpResponseMessage.IsSuccessStatusCode)
+            if (httpResponseMessage.IsSuccessStatusCode && !string.IsNullOrWhiteSpace(responseContent))
             {
                 // Check for any errors in the response JSON
                 var jObject = JObject.Parse(responseContent);
@@ -122,7 +134,7 @@ namespace GraphQl.NetStandard.Client
                     throw new GraphQLQueryException(errorMessages);
                 }
             }
-            else
+            else if (!httpResponseMessage.IsSuccessStatusCode)
             {
                 throw new GraphQLRequestException(httpResponseMessage.StatusCode, responseContent);
             }
