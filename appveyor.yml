@@ -12,6 +12,8 @@ install:
 before_build:
   # Display .NET Core version
   - cmd: dotnet --version
+  # Display the MS Build version
+  - cmd: msbuild -version
   # Display minimal restore text
   - cmd: dotnet restore ./src/GraphQl.NetStandard.Client.sln --verbosity m
 after_build:
@@ -22,7 +24,7 @@ test_script:
   - cmd: dotnet restore ./tests/GraphQL.NetStandard.Client.UnitTests/GraphQL.NetStandard.Client.UnitTests.csproj --verbosity m
   # run the unit tests (requires changing into the test directory)
   - cmd: cd tests/GraphQL.NetStandard.Client.UnitTests/bin/Debug/netcoreapp2.0/
-  - cmd: dotnet vstest GraphQL.NetStandard.Client.UnitTests.dll /logger:Appveyor
+  - cmd: vstest.console /logger:Appveyor GraphQL.NetStandard.Client.UnitTests.dll
 on_finish :
   # any cleanup in here
 deploy:
