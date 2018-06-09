@@ -177,5 +177,153 @@ namespace GraphQL.NetStandard.Client.UnitTests
             //Assert
             responseContent.Should().Be(expectedResponseContent);
         }
+
+        [TestMethod]
+        public async Task SendsRequestAndSerialzesSimpleRepsonse()
+        {
+            //Arrange
+            var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
+            var httpClient = new HttpClient(mockHandler.Object);
+            var url = "http://test";
+            var returnString = "{data : { testDto : { property1: \"value1\", property2 : \"value2\"}}}";
+
+            var graphQlClient = new GraphQLClient(httpClient, url);
+
+            mockHandler
+                .Setup(mock => mock.Send(It.IsAny<HttpRequestMessage>()))
+                .Returns(new HttpResponseMessage
+                {
+                    Content = new StringContent(returnString)
+                });
+
+            var expectedTestDTO = new TestDTO
+            {
+                Property1 = "value1",
+                Property2 = "value2"
+            };
+
+            //Act
+            var resposneTestDTO = await graphQlClient.QueryAsync<TestDTO>(null);
+
+            //Assert
+            resposneTestDTO.ShouldBeEquivalentTo(expectedTestDTO);
+        }
+
+        [TestMethod]
+        public async Task SendsRequestWithVariblesAndSerialzesSimpleRepsonse()
+        {
+            //Arrange
+            var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
+            var httpClient = new HttpClient(mockHandler.Object);
+            var url = "http://test";
+            var returnString = "{data : { testDto : { property1: \"value1\", property2 : \"value2\"}}}";
+
+            var graphQlClient = new GraphQLClient(httpClient, url);
+
+            mockHandler
+                .Setup(mock => mock.Send(It.IsAny<HttpRequestMessage>()))
+                .Returns(new HttpResponseMessage
+                {
+                    Content = new StringContent(returnString)
+                });
+
+            var expectedTestDTO = new TestDTO
+            {
+                Property1 = "value1",
+                Property2 = "value2"
+            };
+
+            //Act
+            var resposneTestDTO = await graphQlClient.QueryAsync<TestDTO>(null, new { varible1 = "value" });
+
+            //Assert
+            resposneTestDTO.ShouldBeEquivalentTo(expectedTestDTO);
+        }
+
+        [TestMethod]
+        public async Task HandlesErrorsInQuery()
+        {
+            //Arrange
+            var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
+            var httpClient = new HttpClient(mockHandler.Object);
+            var url = "http://test";
+            var returnString = "{data : null, errors : [{message : \"errorMessage1\"}, {message: \"errorMessage2\"}]}";
+
+            var graphQlClient = new GraphQLClient(httpClient, url);
+
+            mockHandler
+                .Setup(mock => mock.Send(It.IsAny<HttpRequestMessage>()))
+                .Returns(new HttpResponseMessage
+                {
+                    Content = new StringContent(returnString)
+                });
+
+            var expectedTestDTO = new TestDTO
+            {
+                Property1 = "value1",
+                Property2 = "value2"
+            };
+
+            GraphQLQueryException expectedException = null;
+
+            //Act
+            try
+            {
+                await graphQlClient.QueryAsync(null);
+            }
+            catch (GraphQLQueryException ex)
+            {
+                expectedException = ex;
+            }
+
+            //Assert
+            expectedException.Should().NotBeNull();
+            expectedException.Message.Should().Be("errorMessage1|errorMessage2");
+        }
+
+
+        [TestMethod]
+        public async Task HandlesRequestError()
+        {
+            //Arrange
+            var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
+            var httpClient = new HttpClient(mockHandler.Object);
+            var url = "http://test";
+            var returnString = "{data : null, errors : [{message : \"errorMessage1\"}, {message: \"errorMessage2\"}]}";
+
+            var graphQlClient = new GraphQLClient(httpClient, url);
+
+            mockHandler
+                .Setup(mock => mock.Send(It.IsAny<HttpRequestMessage>()))
+                .Returns(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Content = new StringContent(returnString)
+                });
+
+            var expectedTestDTO = new TestDTO
+            {
+                Property1 = "value1",
+                Property2 = "value2"
+            };
+
+            GraphQLRequestException expectedException = null;
+
+            //Act
+            try
+            {
+                await graphQlClient.QueryAsync(null);
+            }
+            catch (GraphQLRequestException ex)
+            {
+                expectedException = ex;
+            }
+
+            //Assert
+            expectedException.Should().NotBeNull();
+            expectedException.Message.Should().Be("Request failed with status code of InternalServerError");
+            expectedException.ResponseBody.Should().Be(returnString);
+        }
     }
 }
+
