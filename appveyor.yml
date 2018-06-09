@@ -27,11 +27,10 @@ clone_depth: 1
 test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore ./tests/GraphQL.NetStandard.Client.UnitTests/GraphQL.NetStandard.Client.UnitTests.csproj --verbosity m
-  # run the unit tests (requires changing into the test directory)
-  - cmd: cd tests/GraphQL.NetStandard.Client.UnitTests/bin/Release/netcoreapp2.0/
-  - cmd: vstest.console /logger:Appveyor GraphQL.NetStandard.Client.UnitTests.dll
+  # run the unit tests
+  - cmd: vstest.console /logger:Appveyor tests/GraphQL.NetStandard.Client.UnitTests/bin/Release/netcoreapp2.0/GraphQL.NetStandard.Client.UnitTests.dll
 after_test:
-  - cmd: \packages\coveralls.io.1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
+  - cmd: packages\coveralls.io.1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
 on_finish :
   # any cleanup in here
 deploy:
