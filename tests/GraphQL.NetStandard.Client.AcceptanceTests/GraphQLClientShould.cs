@@ -2,6 +2,7 @@ using FluentAssertions;
 using GraphQl.NetStandard.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GraphQL.NetStandard.Client.AcceptanceTests
@@ -9,9 +10,10 @@ namespace GraphQL.NetStandard.Client.AcceptanceTests
     [TestClass]
     public class GraphQLClientShould
     {
-        private static GraphQLClient graphQLClient = new GraphQLClient("https://www.universe.com/graphql");
+        private static GraphQLClient graphQLClient = new GraphQLClient(new HttpClient(), "https://www.universe.com/graphql");
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public async Task ReturnDataFromTestAPI_NoVariablesSerializeToType()
         {
             // Arrange
@@ -35,6 +37,7 @@ namespace GraphQL.NetStandard.Client.AcceptanceTests
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public async Task ReturnDataFromTestAPI_NoVariablesStringContent()
         {
             // Arrange
@@ -65,6 +68,7 @@ namespace GraphQL.NetStandard.Client.AcceptanceTests
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public async Task ReturnDataFromTestAPI_VariablesSerializeToType()
         {
             // Arrange
@@ -90,6 +94,7 @@ namespace GraphQL.NetStandard.Client.AcceptanceTests
         }
 
         [TestMethod]
+        [TestCategory("SkipWhenLiveUnitTesting")]
         public async Task ReturnDataFromTestAPI_VariablesStringContent()
         {
             // Arrange
