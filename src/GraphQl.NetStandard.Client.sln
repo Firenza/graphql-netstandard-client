@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "git", "git", "{D3DB2B1C-DC2
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL.NetStandard.Client.UnitTests", "..\tests\GraphQL.NetStandard.Client.UnitTests\GraphQL.NetStandard.Client.UnitTests.csproj", "{F0BFAC01-8F35-4851-8417-2C3A66D89D4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,12 +32,17 @@ Global
 		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0BFAC01-8F35-4851-8417-2C3A66D89D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0BFAC01-8F35-4851-8417-2C3A66D89D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0BFAC01-8F35-4851-8417-2C3A66D89D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0BFAC01-8F35-4851-8417-2C3A66D89D4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E55FEB46-6B1F-46EE-BDC6-917EACEEDEBF} = {45F2F7CF-3EF0-4239-A174-F90FC31D66FA}
+		{F0BFAC01-8F35-4851-8417-2C3A66D89D4D} = {45F2F7CF-3EF0-4239-A174-F90FC31D66FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C6F943E6-7A80-4B4C-9B2D-5C5FF0EF38FC}
