@@ -1,5 +1,5 @@
 # graphql-netstandard-client
-[![Build status](https://ci.appveyor.com/api/projects/status/bmovyxbqfxjxkigd?svg=true)](https://ci.appveyor.com/project/Firenza/graphql-netstandard-client)
+[![Build status](https://ci.appveyor.com/api/projects/status/bmovyxbqfxjxkigd/branch/master?svg=true)](https://ci.appveyor.com/project/Firenza/graphql-netstandard-client/branch/master)
 
 A simple and testable GraphQL client for .NET and .NET core. Thank you to [bkniffler](https://github.com/bkniffler/graphql-net-client) for providing the template for some of this! 
 
