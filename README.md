@@ -14,7 +14,7 @@ var requestHeaders = new NameValueCollection();
 requestHeaders.Add( "Authorization", $"Bearer {gitHubAuthToken}");
 requestHeaders.Add( "User-Agent", "graphql-netstandard-client" );
 
-IGraphQLClient graphQLClient = new GraphQLClient(githubGraphQLApiUrl, requestHeaders);
+IGraphQLClient graphQLClient = new GraphQLClient(new HttpClient(), githubGraphQLApiUrl, requestHeaders);
 
 var query = @"
 query ($repoName:String!, $repoOwner:String!){
