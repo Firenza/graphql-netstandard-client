@@ -31,6 +31,7 @@ test_script:
   - cmd: cd tests/GraphQL.NetStandard.Client.UnitTests/bin/Release/netcoreapp2.0/
   - cmd: vstest.console /logger:Appveyor GraphQL.NetStandard.Client.UnitTests.dll
 after_test:
+  - cmd: dir
   - cmd: packages\coveralls.io.1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
 on_finish :
   # any cleanup in here
