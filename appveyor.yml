@@ -30,8 +30,7 @@ test_script:
   # run the unit tests
   - cmd: vstest.console /logger:Appveyor tests/GraphQL.NetStandard.Client.UnitTests/bin/Release/netcoreapp2.0/GraphQL.NetStandard.Client.UnitTests.dll
 after_test:
-  - cmd: dir C:\Program Files (x86)\Microsoft Visual Studio\2017\
-   -cmd: c:\Users\appveyor\.nuget\packages\packages\opencover\4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[*]*" -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\MSTest.exe" -targetargs:"/testcontainer:tests/GraphQL.NetStandard.Client.UnitTests/bin/debug/netcoreapp2.0/GraphQL.NetStandard.Client.UnitTests.dll" -output:coverage.xml
+  - cmd: dir c:\Users\appveyor\.nuget\packages\coveralls.io\
   - cmd: c:\Users\appveyor\.nuget\packages\coveralls.io\1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
 on_finish :
   # any cleanup in here
