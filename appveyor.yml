@@ -28,7 +28,7 @@ test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore ./tests/GraphQL.NetStandard.Client.UnitTests/GraphQL.NetStandard.Client.UnitTests.csproj --verbosity m
   # run the unit tests
-  - cmd: vstest.console /logger:Appveyor tests/GraphQL.NetStandard.Client.UnitTests/bin/Release/netcoreapp2.0/GraphQL.NetStandard.Client.UnitTests.dll
+  - cmd: vstest.console /logger:Appveyor tests/GraphQL.NetStandard.Client.UnitTests/bin/Debug/netcoreapp2.0/GraphQL.NetStandard.Client.UnitTests.dll
 after_test:
   # Build again but in Debug mode so we get our full windows PDB generated for opencover
   # - cmd: dotnet build -c Debug
