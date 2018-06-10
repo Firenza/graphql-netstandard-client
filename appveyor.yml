@@ -31,15 +31,13 @@ test_script:
 after_test:
   # Build again but in Debug mode so we get our full windows PDB generated for opencover
   # - cmd: dotnet build -c Debug
-  - cmd: %USERPROFILE%\.nuget\packages\opencover\4.6.519\tools\OpenCover.Console.exe -log:All -register:user -target:"c:\Program Files\dotnet\dotnet.exe" -targetargs:"test -f netcoreapp2.0 -c Debug C:\projects\graphql-netstandard-client\tests\GraphQL.NetStandard.Client.UnitTests\GraphQL.NetStandard.Client.UnitTests.csproj" -oldstyle -filter:"+[GraphQl.NetStandard.Client*]*" -output:coverage.xml
+  - cmd: c:\Users\appveyor\.nuget\packages\opencover\4.6.519\tools\OpenCover.Console.exe -log:All -register:user -target:"c:\Program Files\dotnet\dotnet.exe" -targetargs:"test -f netcoreapp2.0 -c Debug C:\projects\graphql-netstandard-client\tests\GraphQL.NetStandard.Client.UnitTests\GraphQL.NetStandard.Client.UnitTests.csproj" -oldstyle -filter:"+[GraphQl.NetStandard.Client*]*" -output:coverage.xml
   - cmd: dir
-  - cmd: echo %USERPROFILE%
-  - cmd: echo %COVERALLS_REPO_TOKEN%
-  - cmd: %USERPROFILE%\.nuget\packages\coveralls.io\1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
+  - cmd: c:\Users\appveyor\.nuget\packages\coveralls.io\1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
 on_finish :
   # any cleanup in here
 deploy:
-  provider: NuGets
+  provider: NuGet
   api_key:
     secure: NAVDoWNLP4nv5EVqU4/mCtr1Gy1hX8z85W1UVH9EIG9Nmww+USgF6jTm0MiAyRgf
   skip_symbols: false
