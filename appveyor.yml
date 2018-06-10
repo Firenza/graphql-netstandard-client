@@ -31,7 +31,7 @@ test_script:
   - cmd: vstest.console /logger:Appveyor tests/GraphQL.NetStandard.Client.UnitTests/bin/Release/netcoreapp2.0/GraphQL.NetStandard.Client.UnitTests.dll
 after_test:
   - cmd: dir "C:\projects\graphql-netstandard-client\tests\GraphQL.NetStandard.Client.UnitTests\bin\"
-  - cmd: c:\Users\appveyor\.nuget\packages\opencover\4.6.519\tools\OpenCover.Console.exe -register:user -log:All -filter:"+[*]*" -output:coverage.xml -oldstyle -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"test -f netcoreapp2.0 -c Debug C:\projects\graphql-netstandard-client\tests\GraphQL.NetStandard.Client.UnitTests\GraphQL.NetStandard.Client.UnitTests.csproj"
+  - cmd: c:\Users\appveyor\.nuget\packages\opencover\4.6.519\tools\OpenCover.Console.exe -register:user -log:All -filter:"+[*]*" -output:coverage.xml -oldstyle -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"-target:"c:\Program Files\dotnet\dotnet.exe" -targetargs:"test -f netcoreapp2.0 -c Debug C:\projects\graphql-netstandard-client\tests\GraphQL.NetStandard.Client.UnitTests\GraphQL.NetStandard.Client.UnitTests.csproj"
   - cmd: c:\Users\appveyor\.nuget\packages\coveralls.io\1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
 on_finish :
   # any cleanup in here
