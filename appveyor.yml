@@ -1,6 +1,5 @@
 version: '1.0.{build}'
 configuration: Debug
-platform: Any CPU
 image: Visual Studio 2017
 branches:
   only:
