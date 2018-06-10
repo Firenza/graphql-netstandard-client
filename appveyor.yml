@@ -1,28 +1,44 @@
 version: '1.0.{build}'
+configuration: Debug
 image: Visual Studio 2017
 branches:
   only:
   - master
-  - CI
+environment:
+  COVERALLS_REPO_TOKEN:  
+    secure: 4Y9VP6so7pipOsU0FlensQYUqkqoxDzHmZ1pCSBvWEmSN6Alzt90IDm7D51vCRvJ
 init:
   # Good practise, because Windows line endings are different from Unix/Linux ones
   - cmd: git config --global core.autocrlf true
 install:
   # Install repo specific stuff here
 before_build:
+  - cmd: echo on
+  - cmd: echo %COVERALLS_REPO_TOKEN%
   # Display .NET Core version
   - cmd: dotnet --version
+  # Display the MS Build version
+  - cmd: msbuild -version
   # Display minimal restore text
-  - cmd: dotnet restore ./src/src.csproj --verbosity m
+  - cmd: dotnet restore ./src/GraphQl.NetStandard.Client.sln --verbosity m
 after_build:
   # For once the build has completed
 clone_depth: 1
 test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore ./tests/GraphQL.NetStandard.Client.UnitTests/GraphQL.NetStandard.Client.UnitTests.csproj --verbosity m
-  # run the unit tests (requires changing into the test directory)
-  - cmd: cd tests
-  - cmd: dotnet test
+  # run the unit tests
+  - cmd: vstest.console /logger:Appveyor tests/GraphQL.NetStandard.Client.UnitTests/bin/Debug/netcoreapp2.0/GraphQL.NetStandard.Client.UnitTests.dll
+after_test:
+  # Build again but in Debug mode so we get our full windows PDB generated for opencover
+  # - cmd: dotnet build -c Debug
+  - cmd: c:\Users\appveyor\.nuget\packages\opencover\4.6.519\tools\OpenCover.Console.exe -log:All -register:user -target:"c:\Program Files\dotnet\dotnet.exe" -targetargs:"test -f netcoreapp2.0 -c Debug C:\projects\graphql-netstandard-client\tests\GraphQL.NetStandard.Client.UnitTests\GraphQL.NetStandard.Client.UnitTests.csproj" -oldstyle -filter:"+[GraphQl.NetStandard.Client*]*" -output:coverage.xml
+  - cmd: c:\Users\appveyor\.nuget\packages\coveralls.io\1.4.2\tools\coveralls.net.exe --opencover coverage.xml -r %COVERALLS_REPO_TOKEN%
 on_finish :
   # any cleanup in here
-deploy: off
+deploy:
+  provider: NuGet
+  api_key:
+    secure: NAVDoWNLP4nv5EVqU4/mCtr1Gy1hX8z85W1UVH9EIG9Nmww+USgF6jTm0MiAyRgf
+  skip_symbols: false
+  artifact: /.*\.nupkg/
