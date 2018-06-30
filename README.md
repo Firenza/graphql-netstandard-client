@@ -64,8 +64,8 @@ var responseBodySTring = await graphQLClient.QueryAsync(query, variables);
 
 Accomodating the way GraphQl returns collections can be difficult when deseriaizing into a .NET object.  To help with this there are the following classes included with the client
 
-* `GraphQlNodesParent<T>`
-* `GraphQlNodesParentConverter<T>`
+* [`GraphQlNodesParent<T>`](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/src/GraphQl.NetStandard.Client/GraphQLNodesParent.cs)
+* [`GraphQlNodesParentConverter<T>`](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/src/GraphQl.NetStandard.Client/GraphQLNodesParentConverter.cs)
 
 You can use these when defining the DTOs you want to deserialize your GraphQl response into.  E.G. In the example code above the `Repository` DTO is defined as follows
 
