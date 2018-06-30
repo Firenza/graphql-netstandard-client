@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GraphQL.NetStandard.Client.UnitTests
+namespace GraphQL.NetStandard.Client.UnitTests.Model
 {
     public class TestDTO
     {

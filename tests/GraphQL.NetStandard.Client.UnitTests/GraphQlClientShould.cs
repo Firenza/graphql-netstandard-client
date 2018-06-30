@@ -1,17 +1,15 @@
 using FluentAssertions;
 using GraphQl.NetStandard.Client;
+using GraphQL.NetStandard.Client.UnitTests.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GraphQL.NetStandard.Client.UnitTests
@@ -33,7 +31,7 @@ namespace GraphQL.NetStandard.Client.UnitTests
                 .Returns(new HttpResponseMessage());
 
             //Act
-            await graphQlClient.QueryAsync("query", new {x = 1, y=2 });
+            await graphQlClient.QueryAsync("query", new { x = 1, y = 2 });
 
             //Assert
             mockHandler
@@ -77,7 +75,7 @@ namespace GraphQL.NetStandard.Client.UnitTests
             var query = "QUERY";
             var expectedJsonContent = "{\"query\":\"QUERY\",\"variables\":null}";
             var expectedStringContent = new StringContent(string.Empty, Encoding.UTF8, "application/json");
-            
+
 
             //Act
             await graphQlClient.QueryAsync(query);
@@ -127,7 +125,7 @@ namespace GraphQL.NetStandard.Client.UnitTests
             var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
             var httpClient = new HttpClient(mockHandler.Object);
             var url = "http://test";
-        
+
 
             var headerDictionary = new Dictionary<string, IEnumerable<string>>();
             headerDictionary.Add("X-Header1", new List<string> { "Header1Value" });
@@ -179,7 +177,7 @@ namespace GraphQL.NetStandard.Client.UnitTests
         }
 
         [TestMethod]
-        public async Task SendsRequestAndSerialzesSimpleRepsonse()
+        public async Task SendsRequestAndDeserialzesSimpleRepsonse()
         {
             //Arrange
             var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
@@ -210,7 +208,107 @@ namespace GraphQL.NetStandard.Client.UnitTests
         }
 
         [TestMethod]
-        public async Task SendsRequestWithVariblesAndSerialzesSimpleRepsonse()
+        public async Task SendsRequestAndDeserialesRepsonseWithNodes()
+        {
+            //Arrange
+            var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
+            var httpClient = new HttpClient(mockHandler.Object);
+            var url = "http://test";
+            var returnString = @"
+            {
+              ""data"": {
+                ""organization"": {
+                  ""repository"": {
+                    ""pullRequests"": {
+                      ""nodes"": [
+                        {
+                          ""baseRefName"": ""master"",
+                          ""headRefName"": ""development"",
+                          ""reviews"": {
+                            ""totalCount"": 100,
+                            ""nodes"": [
+                              {
+                                ""state"": ""APPROVED"",
+                                ""author"": {
+                                  ""login"": ""bob""
+                                }
+                              }
+                            ],
+                            ""pageInfo"": {
+                              ""hasNextPage"": true,
+                              ""hasPreviousPage"": true,
+                              ""endCursor"": ""ImDaEndCursor"",
+                              ""startCursor"": ""ImDaStartCursor""
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+            ";
+
+            var graphQlClient = new GraphQLClient(httpClient, url);
+
+            mockHandler
+                .Setup(mock => mock.Send(It.IsAny<HttpRequestMessage>()))
+                .Returns(new HttpResponseMessage
+                {
+                    Content = new StringContent(returnString)
+                });
+
+            var expectedOrganization = new Organization
+            {
+                Repository = new Repository
+                {
+                    PullRequests = new GraphQlNodesParent<PullRequest>
+                    {
+                        Nodes = new List<PullRequest>
+                        {
+                            new PullRequest
+                            {
+                                BaseRefName = "master",
+                                HeadRefName = "development",
+                                Reviews = new GraphQlNodesParent<Review>
+                                {
+                                    TotalCount = 100,
+                                    Nodes = new List<Review>
+                                    {
+                                        new Review
+                                        {
+                                            State = "APPROVED",
+                                            Author = new Author
+                                            {
+                                                Login = "bob"
+                                            }
+                                        }
+                                    },
+                                    PageInfo = new GraphQlPageInfo
+                                    {
+                                        HasNextPage = true,
+                                        HasPreviousPage = true,
+                                        EndCursor = "ImDaEndCursor",
+                                        StartCursor = "ImDaStartCursor"
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            };
+
+            //Act
+            var responseOrganization = await graphQlClient.QueryAsync<Organization>(null);
+
+            //Assert
+            responseOrganization.ShouldBeEquivalentTo(expectedOrganization);
+        }
+
+        [TestMethod]
+        public async Task SendsRequestWithVariblesAndDeserialzesSimpleRepsonse()
         {
             //Arrange
             var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
