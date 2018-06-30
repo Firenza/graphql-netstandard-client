@@ -81,7 +81,7 @@ namespace GraphQl.NetStandard.Client
         }
 
         /// <summary>
-        /// Returns the response deserialized into the provided type.  Only useful for simple responses.
+        /// Returns the response deserialized into the provided type
         /// </summary>
         /// <param name="query"></param>
         /// <param name="variables"></param>
@@ -101,7 +101,7 @@ namespace GraphQl.NetStandard.Client
 
 
         /// <summary>
-        /// Returns the response deserialized into the provided type.  Only useful for simple responses.
+        /// Returns the response deserialized into the provided type
         /// </summary>
         /// <param name="query"></param>
         /// <param name="variables"></param>
