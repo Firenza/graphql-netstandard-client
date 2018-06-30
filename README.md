@@ -76,3 +76,8 @@ public class Repository
     public GraphQlNodesParent<PullRequest> PullRequests { get; set; }
 }
 ```
+
+This results in the `PullRequests` object having the following child properties populated which match the way GraphQl returns collections, which saves you from having to define this properties yourself for every collection.
+* TotalCount
+* PageInfo
+* Nodes (A `List<PullRequest>` in this example)
