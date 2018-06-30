@@ -9,6 +9,8 @@ A simple and testable GraphQL client for .NET and .NET core. Thank you to [bknif
 To use reference the `GraphQl.NetStandard.Client` package on [NuGet](https://www.nuget.org/packages/GraphQl.NetStandard.Client/)
 
 An example request to read some basic repository information from GitHub
+
+The example assumes the `Repository` type is defined as it is [here](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/tests/GraphQL.NetStandard.Client.UnitTests/Model/Repository.cs)
 ```csharp
 var repoName = "";
 var repoOwner = "";
@@ -24,17 +26,26 @@ requestHeaders.Add( "User-Agent", "graphql-netstandard-client" );
 IGraphQLClient graphQLClient = new GraphQLClient(new HttpClient(), githubGraphQLApiUrl, requestHeaders);
 
 var query = @"
-query ($repoName:String!, $repoOwner:String!){
+query ($repoName: String!, $repoOwner: String!) {
   repository(name: $repoName, owner: $repoOwner) {
-    pushedAt,
-    createdAt,
-    defaultBranchRef {
-      name
-    }
-    repositoryTopics(first: 10) {
+    pullRequests(first: 1) {
       nodes {
-        topic{
-          name
+        baseRefName
+        headRefName
+        reviews(first: 100) {
+          totalCount
+          nodes {
+            state
+            author {
+              login
+            }
+          }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            endCursor
+            startCursor
+          }
         }
       }
     }
@@ -44,13 +55,24 @@ query ($repoName:String!, $repoOwner:String!){
 
 var variables = new { repoName = repoName, repoOwner = repoOwner }
 
-var responseBodyString = await graphQLClient.QueryAsync(query, variables);
+// Have the client do the deserialization
+var repository = await graphQLClient.QueryAsync<Repository>(query, variables);
 
-// Use Newtonsoft JSON library to get at response data
-dynamic dynamicJObject = JObject.Parse(responseBodyString);
-Console.WriteLine(dynamicJObject.data.repository.pushedAt.Value<DateTime>());
+// Get the raw response body string
+var responseBodySTring = await graphQLClient.QueryAsync(query, variables);
+```
 
-// Of if dynamics aren't your cup of tea
-jObject = JObject.Parse(responseBodyString);
-Console.WriteLine(jObject["data"]["repository"]["pushedAt"].Value<DateTime>());
+Accomodating the way GraphQl returns collections can be difficult when deseriaizing into a .NET object.  To help with this there are the following classes included with the client
+
+* `GraphQlNodesParent<T>`
+* `GraphQlNodesParentConverter<T>`
+
+You can use these when defining the DTOs you want to deserialize your GraphQl response into.  E.G. In the example code above the `Repository` DTO is defined as follows
+
+```csharp
+public class Repository
+{
+    [JsonConverter(typeof(GraphQlNodesParentConverter<PullRequest>))]
+    public GraphQlNodesParent<PullRequest> PullRequests { get; set; }
+}
 ```
