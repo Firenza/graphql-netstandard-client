@@ -62,7 +62,7 @@ var repository = await graphQLClient.QueryAsync<Repository>(query, variables);
 var responseBodySTring = await graphQLClient.QueryAsync(query, variables);
 ```
 
-Accomodating the way GraphQl returns collections can be difficult when deseriaizing into a .NET object.  To help with this there are the following classes included with the client
+Accomodating the way GraphQl returns collections can be difficult when deserializing into a .NET object.  To help with this the following classes included with the client
 
 * [`GraphQlNodesParent<T>`](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/src/GraphQl.NetStandard.Client/GraphQLNodesParent.cs)
 * [`GraphQlNodesParentConverter<T>`](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/src/GraphQl.NetStandard.Client/GraphQLNodesParentConverter.cs)
