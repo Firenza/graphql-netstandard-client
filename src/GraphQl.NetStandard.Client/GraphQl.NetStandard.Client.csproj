@@ -9,10 +9,10 @@
     <Description>A simple and testable GraphQL client for .NET and .NET core</Description>
     <RepositoryUrl>https://github.com/Firenza/graphql-netstandard-client</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <Version>2.2.0</Version>
+    <Version>2.3.0</Version>
     <PackageProjectUrl>https://github.com/Firenza/graphql-netstandard-client</PackageProjectUrl>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
     <!--Include PDBs in the NuGet package so uploading a seperate symbols package is not needed-->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
