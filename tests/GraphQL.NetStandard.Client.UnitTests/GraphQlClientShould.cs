@@ -308,6 +308,130 @@ namespace GraphQL.NetStandard.Client.UnitTests
         }
 
         [TestMethod]
+        public async Task SendsRequestAndDeserialesRepsonseWithEdges()
+        {
+            //Arrange
+            var mockHandler = new Mock<HttpMessageHandlerWrapper> { CallBase = true };
+            var httpClient = new HttpClient(mockHandler.Object);
+            var url = "http://test";
+            var returnString = @"
+            {
+              ""data"": {
+                ""organization"": {
+                  ""teams"": {
+                    ""nodes"": [
+                      {
+                        ""name"": ""Team1"",
+                        ""repositoryEdges"": {
+                          ""edges"": [
+                            {
+                              ""permission"": ""WRITE"",
+                              ""repository"": {
+                                ""name"": ""Repo1""
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        ""name"": ""Team2"",
+                        ""repositoryEdges"": {
+                          ""edges"": [
+                            {
+                              ""permission"": ""ADMIN"",
+                              ""repository"": {
+                                ""name"": ""Repo2""
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    ""pageInfo"": {
+                        ""hasNextPage"": true,
+                        ""hasPreviousPage"": true,
+                        ""endCursor"": ""ImDaEndCursor"",
+                        ""startCursor"": ""ImDaStartCursor""
+                    }
+                  }
+                }
+              }
+            }
+            ";
+
+            var graphQlClient = new GraphQLClient(httpClient, url);
+
+            mockHandler
+                .Setup(mock => mock.Send(It.IsAny<HttpRequestMessage>()))
+                .Returns(new HttpResponseMessage
+                {
+                    Content = new StringContent(returnString)
+                });
+
+            var expectedOrganization = new Organization
+            {
+                Teams = new GraphQlNodesParent<Team>
+                {
+                    Nodes = new List<Team>
+                    {
+                        new Team
+                        {
+                            Name = "Team1",
+                            RepositoryEdges = new GraphQLEdgesParent<TeamToRepositoryEdge>
+                            {
+                                Edges = new List<TeamToRepositoryEdge>
+                                {
+                                    new TeamToRepositoryEdge
+                                    {
+                                        Permission = "WRITE",
+                                        Repository = new Repository
+                                        {
+                                            Name = "Repo1"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        new Team
+                        {
+                            Name = "Team2",
+                            RepositoryEdges = new GraphQLEdgesParent<TeamToRepositoryEdge>
+                            {
+                                Edges = new List<TeamToRepositoryEdge>
+                                {
+                                    new TeamToRepositoryEdge
+                                    {
+                                        Permission = "ADMIN",
+                                        Repository = new Repository
+                                        {
+                                            Name = "Repo2"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    },
+                    PageInfo = new GraphQlPageInfo
+                    {
+                        HasNextPage = true,
+                        HasPreviousPage = true,
+                        EndCursor = "ImDaEndCursor",
+                        StartCursor = "ImDaStartCursor"
+                    }
+                }
+            };
+
+            //Act
+            var responseOrganization = await graphQlClient.QueryAsync<Organization>(null);
+
+            //Assert
+            responseOrganization.ShouldBeEquivalentTo(expectedOrganization);
+        }
+
+
+
+        [TestMethod]
         public async Task SendsRequestWithVariblesAndDeserialzesSimpleRepsonse()
         {
             //Arrange
