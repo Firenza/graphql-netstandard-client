@@ -14,8 +14,7 @@ An example request to read some basic repository information from GitHub
 
 The example assumes the `Repository` type is defined as it is [here](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/tests/GraphQL.NetStandard.Client.UnitTests/Model/Repository.cs)
 ```csharp
-var repoName = "";
-var repoOwner = "";
+var login = "";
 var gitHubAuthToken = "";
 var githubGraphQLApiUrl = "https://api.github.com/graphql";
 
@@ -28,34 +27,37 @@ requestHeaders.Add( "User-Agent", "graphql-netstandard-client" );
 IGraphQLClient graphQLClient = new GraphQLClient(new HttpClient(), githubGraphQLApiUrl, requestHeaders);
 
 var query = @"
-query ($repoName: String!, $repoOwner: String!) {
-  repository(name: $repoName, owner: $repoOwner) {
-    pullRequests(first: 1) {
-      nodes {
-        baseRefName
-        headRefName
-        reviews(first: 100) {
-          totalCount
-          nodes {
-            state
-            author {
-              login
-            }
-          }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            endCursor
-            startCursor
+query ($login: String!) {
+  organization(login: $login) {
+    teams(first: 2) {
+      nodes {        
+        name
+        // Use this object if you just want the list of child objects
+        repositories(first:1){
+          nodes{
+            name
           }
         }
+        // Use this object if you want the relationship information between parent and children
+        repositoryEdges: repositories(first: 1) {
+          edges {
+            permission
+            repository: node{
+              name
+            }
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
       }
     }
   }
 }
 ";
 
-var variables = new { repoName = repoName, repoOwner = repoOwner }
+var variables = new { login = login}
 
 // Have the client do the deserialization
 var repository = await graphQLClient.QueryAsync<Repository>(query, variables);
@@ -64,22 +66,68 @@ var repository = await graphQLClient.QueryAsync<Repository>(query, variables);
 var responseBodySTring = await graphQLClient.QueryAsync(query, variables);
 ```
 
-Accomodating the way GraphQl returns collections can be difficult when deserializing into a .NET object.  To help with this the following classes included with the client
 
-* [`GraphQlNodesParent<T>`](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/src/GraphQl.NetStandard.Client/GraphQLNodesParent.cs)
-* [`GraphQlNodesParentConverter<T>`](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/src/GraphQl.NetStandard.Client/GraphQLNodesParentConverter.cs)
 
-You can use these when defining the DTOs you want to deserialize your GraphQl response into.  E.G. In the example code above the `Repository` DTO is defined as follows
+
+
+### Handling response collections
+
+Accomodating the way GraphQl returns collections (nodes and edges) can be difficult when deserializing into a .NET object.  To accomplish this with this client
+see the sections below
+
+#### Nodes
+
+You can use the 
+[`GraphQlNodesParent<T>`](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/src/GraphQl.NetStandard.Client/GraphQLNodesParent.cs) 
+and [`GraphQlNodesParentConverter<T>`](https://github.com/Firenza/graphql-netstandard-client/blob/2bca117a5c29a24c1a0aaea197cb0216015fd076/src/GraphQl.NetStandard.Client/GraphQLNodesParentConverter.cs)
+classes when defining the DTOs you want to deserialize your GraphQl response nodes into.  E.G. In the example code above the `Team` DTO is defined as follows
 
 ```csharp
-public class Repository
+public class Team
 {
-    [JsonConverter(typeof(GraphQlNodesParentConverter<PullRequest>))]
-    public GraphQlNodesParent<PullRequest> PullRequests { get; set; }
+    [JsonConverter(typeof(GraphQlNodesParentConverter<Repository>))]
+    public GraphQlNodesParent<Repository> Repositories { get; set; }
 }
 ```
 
-This results in the `PullRequests` object having the following child properties populated which match the way GraphQl returns collections, which saves you from having to define this properties yourself for every collection.
+This results in the `Repositories` object having the following child properties populated which match the way GraphQl returns collections, which saves you from having to define this properties yourself for every collection.
 * TotalCount
 * PageInfo
-* Nodes (A `List<PullRequest>` in this example)
+* Nodes (A `List<Repository>` in this example)
+
+#### Edges
+
+Edges are a little more complicated as you don't just have a list of child objects, you have an object inbetween describing the relationship between
+the parent and child objects.
+
+First create a class representing this in between edge object.  The following class can be used to get the edge information 
+for the Team -> Repository relationship from the GitHub GraphQL API.
+
+```csharp
+public class TeamToRepositoryEdge
+{
+    public string Permission { get; set; }
+    public Repository Repository { get; set; }
+}
+```
+
+
+Then you can use this class with the
+[`GraphQlEdgesParent<T>`]() 
+and [`GraphQlEdgesParentConverter<T>`]()
+classes to describe the list of edges you want to deserialize  E.G. In the example code above the `Team` DTO is defined as follows
+
+```csharp
+public class Team
+{
+    [JsonConverter(typeof(GraphQlEdgesParentConverter<TeamToRepositoryEdge>))]
+    // This property name must match an aliased GraphQl node in your query 
+    // (I.E. you'll have alias the `edge` node to match the name of this property)
+    public GraphQLEdgesParent<TeamToRepositoryEdge> RepositoryEdges { get; set; }
+}
+```
+
+This results in the `RepositoryEdges` object having the following child properties.
+* TotalCount
+* PageInfo
+* Edges (A `List<TeamToRepositoryEdge>` in this example)
