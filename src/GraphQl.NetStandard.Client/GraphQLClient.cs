@@ -128,12 +128,12 @@ namespace GraphQl.NetStandard.Client
                         errorMessages.Add(errorJObject["message"].Value<string>());
                     }
 
-                    throw new GraphQLQueryException(errorMessages);
+                    throw new GraphQLQueryException(errorMessages, httpResponseMessage.Headers);
                 }
             }
             else if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                throw new GraphQLRequestException(httpResponseMessage.StatusCode, responseContent);
+                throw new GraphQLRequestException(httpResponseMessage.StatusCode, responseContent, httpResponseMessage.Headers);
             }
         }
     }

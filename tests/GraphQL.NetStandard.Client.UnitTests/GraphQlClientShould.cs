@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -473,12 +474,15 @@ namespace GraphQL.NetStandard.Client.UnitTests
 
             var graphQlClient = new GraphQLClient(httpClient, url);
 
+            var headerToReturn = new KeyValuePair<string, string>("X-SomeCustomHeader", "SomeCustomerHeaderValue");
+
+            var responseMessageToReturn = new HttpResponseMessage();
+            responseMessageToReturn.Headers.Add(headerToReturn.Key, headerToReturn.Value);
+            responseMessageToReturn.Content = new StringContent(returnString);
+
             mockHandler
                 .Setup(mock => mock.Send(It.IsAny<HttpRequestMessage>()))
-                .Returns(new HttpResponseMessage
-                {
-                    Content = new StringContent(returnString)
-                });
+                .Returns(responseMessageToReturn);
 
             var expectedTestDTO = new TestDTO
             {
@@ -501,6 +505,7 @@ namespace GraphQL.NetStandard.Client.UnitTests
             //Assert
             expectedException.Should().NotBeNull();
             expectedException.Message.Should().Be("errorMessage1|errorMessage2");
+            expectedException.ResponseHeaders.GetValues(headerToReturn.Key).FirstOrDefault().Should().Be(headerToReturn.Value);
         }
 
 
@@ -515,13 +520,16 @@ namespace GraphQL.NetStandard.Client.UnitTests
 
             var graphQlClient = new GraphQLClient(httpClient, url);
 
+            var headerToReturn = new KeyValuePair<string, string>("X-SomeCustomHeader", "SomeCustomerHeaderValue");
+            
+            var responseMessageToReturn = new HttpResponseMessage();
+            responseMessageToReturn.Headers.Add(headerToReturn.Key, headerToReturn.Value);
+            responseMessageToReturn.StatusCode = HttpStatusCode.InternalServerError;
+            responseMessageToReturn.Content = new StringContent(returnString);
+
             mockHandler
                 .Setup(mock => mock.Send(It.IsAny<HttpRequestMessage>()))
-                .Returns(new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.InternalServerError,
-                    Content = new StringContent(returnString)
-                });
+                .Returns(responseMessageToReturn);
 
             var expectedTestDTO = new TestDTO
             {
@@ -545,6 +553,7 @@ namespace GraphQL.NetStandard.Client.UnitTests
             expectedException.Should().NotBeNull();
             expectedException.Message.Should().Be("Request failed with status code of InternalServerError");
             expectedException.ResponseBody.Should().Be(returnString);
+            expectedException.ResponseHeaders.GetValues(headerToReturn.Key).FirstOrDefault().Should().Be(headerToReturn.Value);
         }
     }
 }
