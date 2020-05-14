@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 
 namespace GraphQl.NetStandard.Client
 {
@@ -10,6 +11,8 @@ namespace GraphQl.NetStandard.Client
     public class GraphQLQueryException : Exception
     {
         public List<string> ErrorMessages { get; set; }
+        public HttpResponseHeaders ResponseHeaders { get; set; }
+
 
         public override string Message
         {
@@ -28,9 +31,10 @@ namespace GraphQl.NetStandard.Client
 
         private GraphQLQueryException() { }
 
-        public GraphQLQueryException(IEnumerable<string> errorMessages) : base()
+        public GraphQLQueryException(IEnumerable<string> errorMessages, HttpResponseHeaders httpResponseHeaders) : base()
         {
             ErrorMessages = errorMessages.ToList();
+            ResponseHeaders = httpResponseHeaders;
         }
     }
 }
